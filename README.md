@@ -16,3 +16,4 @@ KEYSTORE=my-release-key.keystore KEY_ALIAS=my-key-alias KEYSTORE_PASSWORD=somepa
 
 apk will be in android/app/build/outputs/apk/release/app-release.apk
 
+TODO, add gifs of screenshots to this readme
