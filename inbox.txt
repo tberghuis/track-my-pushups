@@ -1,0 +1,11 @@
+move AwesomeProject to sandbox
+gitignore
+egghead courses
+get started, next task/feature
+divide and conquer
+
+
+name app TrackMyPushups
+
+put a back button on settings page
+put a burger menu in home screen header
