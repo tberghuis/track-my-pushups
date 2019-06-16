@@ -4,7 +4,14 @@ import {
   DatePicker
 } from "react-native-wheel-picker-android";
 import React, { Component } from "react";
-import { Image, AppRegistry, StyleSheet, View, Alert } from "react-native";
+import {
+  AppState,
+  Image,
+  AppRegistry,
+  StyleSheet,
+  View,
+  Alert
+} from "react-native";
 import { Button, Text } from "react-native-elements";
 import _range from "lodash/range";
 import Icon from "react-native-vector-icons/Octicons";
@@ -16,11 +23,15 @@ import startOfDay from "date-fns/start_of_day";
 import { observer } from "mobx-react";
 import { scheduleNotification } from "../NotifService";
 import { observable, autorun } from "mobx";
+import getDayOfYear from "date-fns/get_day_of_year";
 
 const localState = observable({
   selectedWheelItemIndex: 0,
-  progress: 0
+  progress: 0,
+  dayOfYear: getDayOfYear(new Date())
 });
+
+// global.dayOfYear = localState.dayOfYear;
 
 // TODO mobx when
 autorun(() => {
@@ -53,6 +64,10 @@ class Track extends Component {
   constructor(props) {
     super(props);
 
+    // this.focusListener = props.navigation.addListener("didFocus", () => {
+    //   console.log("didFocus", new Date());
+    // });
+
     // do i need loading state? not for now
 
     // TODO remove this.state, replace with mobx
@@ -81,6 +96,28 @@ class Track extends Component {
       localState.progress = progress;
     });
   }
+
+  componentDidMount() {
+    AppState.addEventListener("change", this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener("change", this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (nextAppState === "active") {
+      const dayOfYear = getDayOfYear(new Date());
+      console.log("TCL: Track -> dayOfYear", dayOfYear)
+      
+      if (dayOfYear != localState.dayOfYear) {
+
+        // reset todays progress
+        localState.progress = 0;
+        localState.dayOfYear = dayOfYear;
+      }
+    }
+  };
 
   static navigationOptions = ({ navigation }) => {
     return {
