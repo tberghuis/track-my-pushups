@@ -20,6 +20,7 @@ import Track from "./screens/Track";
 import Settings from "./screens/Settings";
 import DevUtils from "./screens/DevUtils";
 import MobxDemo from "./screens/MobxDemo";
+import DateTimeTest from "./screens/DateTimeTest";
 import Graphs from "./screens/Graphs";
 import withThemeProvider from "./withThemeProvider";
 
@@ -50,6 +51,9 @@ const DrawerExample = createDrawerNavigator({
   },
   MobxDemo: {
     screen: MobxDemo
+  },
+  DateTimeTest: {
+    screen: DateTimeTest
   }
 });
 
