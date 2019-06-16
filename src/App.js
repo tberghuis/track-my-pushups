@@ -55,10 +55,4 @@ const DrawerExample = createDrawerNavigator({
 
 const MyApp = createAppContainer(DrawerExample);
 
-// export default class App extends React.Component {
-//   render() {
-//     return <MyApp />;
-//   }
-// }
-
 export default withThemeProvider(MyApp);

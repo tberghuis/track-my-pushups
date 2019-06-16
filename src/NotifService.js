@@ -46,3 +46,8 @@ export function scheduleNotification(num_pushups_remaining) {
     soundName: "default"
   });
 }
+
+
+export function scheduleDailyNotification() {
+  
+}
