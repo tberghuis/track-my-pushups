@@ -7,6 +7,8 @@ class Settings {
   @observable dailyRepsTarget = null;
   @observable defaultNumReps = null;
   @observable notificationDelayMins = null;
+  // type Date
+  @observable dailyReminderTime = null;
 
   @observable initialised = false;
 
@@ -15,12 +17,9 @@ class Settings {
 
   // i am not doing everything purely the correct mobx way where the view is entirely reactive.
   // UI events like onblur directly alter state
-
-
 }
 
 const settings = new Settings();
-
 
 // TODO i should probably export initialisedSettingsPromise
 // that way i do not have to worry about nulls in other places
@@ -30,18 +29,20 @@ async function initialiseFromDb() {
   const db = await initialisedDbPromise;
 
   const [settingsResult] = await db.executeSql(
-    `select daily_reps_target, default_num_reps, notification_delay_mins from settings`
+    `select daily_reps_target, default_num_reps, notification_delay_mins, daily_reminder_time from settings`
   );
 
   const {
     daily_reps_target,
     default_num_reps,
-    notification_delay_mins
+    notification_delay_mins,
+    daily_reminder_time
   } = settingsResult.rows.item(0);
 
   settings.dailyRepsTarget = daily_reps_target;
   settings.defaultNumReps = default_num_reps;
   settings.notificationDelayMins = notification_delay_mins;
+  settings.dailyReminderTime = new Date(daily_reminder_time);
 
   settings.initialised = true;
 
@@ -58,6 +59,7 @@ async function updateDbOnChange() {
   let dailyRepsTarget = settings.dailyRepsTarget;
   let defaultNumReps = settings.defaultNumReps;
   let notificationDelayMins = settings.notificationDelayMins;
+  let dailyReminderTime = settings.dailyReminderTime.getTime();
   if (firstRun) {
     firstRun = false;
     return;
@@ -68,6 +70,7 @@ async function updateDbOnChange() {
     `UPDATE settings SET 
       daily_reps_target = ${dailyRepsTarget},
       default_num_reps = ${defaultNumReps},
-      notification_delay_mins = ${notificationDelayMins}`
+      notification_delay_mins = ${notificationDelayMins},
+      daily_reminder_time = ${dailyReminderTime}`
   );
 }

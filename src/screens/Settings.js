@@ -1,13 +1,17 @@
 import React from "react";
 import { View } from "react-native";
-import { Text, Input } from "react-native-elements";
+import { Text, Input, Button } from "react-native-elements";
 import settings from "../database/Settings";
 import { observer } from "mobx-react";
 import { observable, when } from "mobx";
+import format from "date-fns/format";
+import DateTimePicker from "react-native-modal-datetime-picker";
+import { scheduleDailyReminder } from "../NotifService";
 
 // i need to rewrite with localState
 
 const localState = observable({
+  isDateTimePickerVisible: false,
   notificationDelayMins: null,
   dailyRepsTarget: null,
   defaultNumReps: null
@@ -29,6 +33,21 @@ initialiseLocalState();
 export default class Settings extends React.Component {
   static navigationOptions = {
     title: "Settings"
+  };
+
+  showDateTimePicker = () => {
+    localState.isDateTimePickerVisible = true;
+  };
+
+  hideDateTimePicker = () => {
+    localState.isDateTimePickerVisible = false;
+  };
+
+  handleDatePicked = date => {
+    settings.dailyReminderTime = date;
+    this.hideDateTimePicker();
+
+    scheduleDailyReminder(date);
   };
 
   onChangedNotificationDelayMins = text => {
@@ -63,6 +82,7 @@ export default class Settings extends React.Component {
 
   render() {
     return (
+      // do i need nested view
       <View>
         <View>
           <Text h4>Functionality Coming Soon...</Text>
@@ -88,8 +108,18 @@ export default class Settings extends React.Component {
             onChangeText={this.onChangedNotificationDelayMins}
             onBlur={this.onBlurNotificationDelayMins}
           />
-          <Text h4>daily notification time</Text>
+          <Text h4>
+            Daily reminder time: {format(settings.dailyReminderTime, "HH:mm")}
+          </Text>
+          <Button title="Set reminder time" onPress={this.showDateTimePicker} />
         </View>
+        <DateTimePicker
+          isVisible={localState.isDateTimePickerVisible}
+          onConfirm={this.handleDatePicked}
+          onCancel={this.hideDateTimePicker}
+          mode="time"
+          date={settings.dailyReminderTime}
+        />
       </View>
     );
   }

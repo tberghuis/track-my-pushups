@@ -1,5 +1,6 @@
 import React from "react";
 import SQLite from "react-native-sqlite-storage";
+import {scheduleDailyReminder} from '../NotifService'
 
 // SQLite.DEBUG(true);
 SQLite.enablePromise(true);
@@ -45,6 +46,15 @@ async function initialiseFreshDb(db) {
     return;
   }
 
+  // TODO start the reminder from tomorrow
+  // probably not the best place to kick this off
+  // is there some fresh install hook provided by react native
+  scheduleDailyReminder(new Date(1561064400000));
+  
+
+  // TODO proper migrations strategy
+
+
   // do i even need transactions... not at this stage
 
   const sql1 = `CREATE TABLE IF NOT EXISTS sets(
@@ -55,13 +65,15 @@ async function initialiseFreshDb(db) {
   const sql2 = `CREATE TABLE IF NOT EXISTS settings(
     daily_reps_target INTEGER,
     default_num_reps INTEGER,
-    notification_delay_mins INTEGER)`;
+    notification_delay_mins INTEGER,
+    daily_reminder_time INTEGER)`;
 
   const sql3 = `INSERT INTO settings (
     daily_reps_target,
     default_num_reps,
-    notification_delay_mins)
-    VALUES (100, 10, 15)`;
+    notification_delay_mins,
+    daily_reminder_time)
+    VALUES (100, 10, 15, 1561064400000)`;
 
   const prom1 = db.executeSql(sql1);
   const prom2 = (async () => {
