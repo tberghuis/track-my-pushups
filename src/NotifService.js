@@ -18,7 +18,7 @@ PushNotification.configure({
 
 // TODO testing will it work on reboot
 
-export function scheduleNotification(num_pushups_remaining) {
+export function scheduleNotification(num_pushups_remaining, notificationDelayMins) {
   console.log("scheduleNotification");
 
   // PushNotification.cancelAllLocalNotifications();
@@ -32,7 +32,7 @@ export function scheduleNotification(num_pushups_remaining) {
 
   PushNotification.localNotificationSchedule({
     // TODO change to mins
-    date: new Date(Date.now() + settings.notificationDelayMins * 60 * 1000),
+    date: new Date(Date.now() + notificationDelayMins * 60 * 1000),
 
     id: DELAYED_NOTIFICATION_ID, // this is for the id for delayed notif
     autoCancel: true,

@@ -154,7 +154,11 @@ class Track extends Component {
       return;
     }
 
-    scheduleNotification(settings.dailyRepsTarget - localState.progress);
+    // TODO i should move progress to centralised store
+    // settings and progress live in centralised appState
+    // on progress change, delay change or delay notif toggle
+    // autorun in Notif class to call scheduleNotification
+    scheduleNotification(settings.dailyRepsTarget - localState.progress, settings.notificationDelayMins);
   };
 
   render() {
